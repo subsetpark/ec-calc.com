@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Bitter", serif;
+  background-color: #ffffea;
+}
+
+code {
+  font-family: "Courier", monospace;
+}
+
+.ornament {
+    text-align: center;
+}
+
+a:normal {
+    color: 'RoyalBlue';
+}
+
+a:visited {
+    color: #2F4F4F;
+}
+
+/* Style the header */
+.header {
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  font-family: "Courier", monospace;
+  border-style: none none solid none;
+}
+
+.double-line {
+  text-decoration: underline overline darkgrey;
+}
+
+.column {
+  float: left;
+  width: 45%;
+  padding: 10px;
+}
+
+.narrow {
+  float: left;
+  width: 27.5%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+.footer {
+  padding: 10px;
+  text-align: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+
+

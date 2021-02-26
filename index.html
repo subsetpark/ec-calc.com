@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>EC</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="Description" content="A useful desk calculator, including vectors and quotations.">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
+
+<link href="static/style.css" rel="stylesheet" />
+</head>
+
+<body>
+
+<div class="header">
+  <h1><span class="double-line">EC</h1>
+</div>
+
+<div class="row">
+  <div class="narrow">&nbsp;</div>
+  <div class="column">
+    <h2>A stack-based calculator with vectors and quotations</h2>
+<p>EC is a useful command-line RPN calculator. It’s designed to be
+powerful and efficient from the command line.</p>
+<p>EC’s design has several inspirations:</p>
+<ul>
+<li><code>dc</code>, the reverse-polish desk calculator which comes standard on many UNIX systems;</li>
+<li><a href="https://www.jsoftware.com/">J</a>, an language in the <a href="https://tryapl.org/">APL</a> family which has operators that
+can work on arbitrary-dimensional <a href="https://en.wikipedia.org/wiki/Array_programming">arrays</a>;</li>
+<li>Manfred von Thun’s <a href="http://joy-lang.org/">Joy</a>, a concatenative functional language
+which uses <a href="https://hypercubed.github.io/joy/html/forth-joy.html">quotations</a> to do functional programming.</li>
+</ul>
+<p>Taken together, EC tries to harmonize three powerful concepts:</p>
+<ul>
+<li>reverse-polish notation,</li>
+<li>array operations,</li>
+<li>and quotations.</li>
+</ul>
+<h2>Reverse-Polish notation</h2>
+<pre><code>⊕ ec 10 5 +
+15
+</code></pre>
+<p>In Reverse-Polish Notation (or RPN), mathematical operations are
+expressed with the operator in the final place.</p>
+<p>While this appears a little unfamiliar, it has some real
+benefits. Chief among them: there is no concept of operator precedence
+and no need for parentheses to indicate order of operations. There is
+no ambiguity between <code>4 + 2 * 4</code> and <code>(4 + 2) * 4</code>; those would be <code>2 4 * 4 +</code> and <code>2 4 + 4 *</code> (or <code>4 2 4 + *</code>) respectively. When writing
+quick sums on the command line, it helps to not have to futz with
+parenthesis and infix notation.</p>
+<h2>Array Operations</h2>
+<p>In addition to ordinary integer and floating point numbers, EC
+introduces <strong>Vectors</strong>, which are multi-dimensional lists of
+numbers. EC operators can work on vectors of different shape without
+any special notation. For example, here we see operations between two
+numbers, a number and a vector, two vectors, and vectors of differing
+shape:</p>
+<pre><code>ec 100 0.65 x
+65
+</code></pre>
+<pre><code>⊕ ec [3.15 3.20 3.50 3.65 3.85] 0.65 x
+[2.0475 2.08 2.275 2.3725 2.5025]
+</code></pre>
+<pre><code>⊕ ec [3.15 3.20 0.350] [0.65 0.80 0.75] x
+[2.0475 2.56 0.2625]
+</code></pre>
+<pre><code>⊕ ec [[3.15 3.20 0.350] [100 200 300]] [0.65 0.80 0.75] x
+[[2.0475 2.56 0.2625] [65 160 225]]
+</code></pre>
+<h2>Quotations</h2>
+<p>Finally, a sequence of symbols can be wrapped in parentheses or curly
+braces to form <strong>Quotations</strong>, which is unevaluated code. These
+unevaluated programs can be manipulated by <strong>Combinators</strong> like
+<code>dist</code>, below, to perform powerful higher-level functional operations.</p>
+<p>In this example, <code>dist</code> inserts the quoted operation in between each
+element of the vector. It’s trivial to construct a program to find the
+<strong>sum</strong> of a list of numbers out of these primitives.</p>
+<pre><code>⊕ ec [2.5 100 2 14] 0 {+} dist
+118.5
+</code></pre>
+<p>Operators that are manipulated by combinators are designed to remain
+fully compatible with array math, as in the following example:</p>
+<pre><code>⊕ ec [[2.5 100 2 14] [45 55 65 75] [100 99 98 97]] 0 {+} dist                                      
+[147.5 254 165 186]
+</code></pre>
+<h2>Combinators</h2>
+<p>EC inherits (lifts wholesale) from Joy many useful Combinators:
+programs which manipulate one or more quotation to accomplish
+powerful, complex operations. Here are som examples, along with
+descriptions from EC’s help system.</p>
+<h3><code>dist</code></h3>
+<pre><code>⊕ ec {/} ?
+--
+
+dist: dist
+
+S v a q -- S
+Insert `a`, then apply quotation `q` after every element of `v`.
+</code></pre>
+<hr />
+<pre><code>⊕ ec [2.5 100 2 14] 0 {+} dist
+118.5
+</code></pre>
+<h3><code>fork</code></h3>
+<pre><code>⊕ ec {fork} ?
+--
+
+fork: fork
+
+S a q p -- S a' a''
+Apply q to a, and p to a, and push the results on the stack.
+</code></pre>
+<hr />
+<pre><code>⊕ ec [34 20 12] {0 {+} /} {length} fork %
+22
+</code></pre>
+<h3><code>primrec</code></h3>
+<pre><code>⊕ ec {primrec} ?                                        
+--
+
+primrec: primrec
+
+S d zq oq -- S
+
+Primitive recursion.
+
+&gt; If the data parameter is [zero or empty], then the first quotation has to
+&gt; produce the value to be returned. If the data parameter is
+&gt; positive then the second has to combine the data parameter with
+&gt; the result of applying the function to its predecessor.
+Manfred von Thun, _Tutorial on Joy_
+</code></pre>
+<hr />
+<pre><code>⊕ ec 5 {1} {*} primrec
+120
+</code></pre>
+
+  </div>
+  <div class="narrow">&nbsp;</div>
+</div>
+
+<div class="footer">
+<div class="narrow">Z. D. Smith, 2021.</div>
+<div class="column">&nbsp;</div>
+<div class="narrow">Built with <a href="https://bagatto.co">Bagatto</a>.</div>
+</div>
+</body>
+</html>
