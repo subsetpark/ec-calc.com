@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+nav {
+    text-align: center;
+}
+
 body {
   font-family: "Bitter", serif;
   background-color: #ffffea;
@@ -46,6 +50,17 @@ a:visited {
   float: left;
   width: 27.5%;
   padding: 10px;
+}
+
+.nav {
+    padding: 12px;
+    text-decoration: none !important;
+    color: #000 !important;
+    display: inline;
+    width: 50%;
+    font-size: 25px;
+    font-family: "Courier", monospace;
+    font-weight: bold;
 }
 
 /* Clear floats after the columns */
